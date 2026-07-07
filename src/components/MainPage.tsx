@@ -8,6 +8,7 @@ import Header from "./sections/Header";
 import Hero from "./sections/Hero";
 import Provenance from "./sections/Provenance";
 import QualityControl from "./sections/QualityControl";
+import ColdChain from "./sections/ColdChain";
 import Catalog from "./sections/Catalog";
 import Inquiry from "./sections/Inquiry";
 
@@ -35,7 +36,7 @@ export default function MainPage() {
   }, []);
 
   return (
-    <div ref={mainRef} className="relative min-h-screen bg-[#F4F7F2] text-[#0B2014] overflow-x-hidden">
+    <div ref={mainRef} className="relative min-h-screen bg-[#F7F9F5] text-[#333C37] overflow-x-hidden">
       {/* 1. Brand Navbar Navigation Header */}
       <Header />
 
@@ -44,6 +45,7 @@ export default function MainPage() {
         <Hero />
         <Provenance />
         <QualityControl />
+        <ColdChain />
         <Catalog />
         <Inquiry />
       </main>
