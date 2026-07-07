@@ -14,8 +14,9 @@ export default function Inquiry() {
   const [volume, setVolume] = useState("1x40ft RF");
   const [requirements, setRequirements] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!name || !email || !port) {
@@ -23,24 +24,54 @@ export default function Inquiry() {
       return;
     }
 
-    setSubmitted(true);
+    setSubmitting(true);
 
-    // Premium Confetti Burst
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ["#459A26", "#225D38", "#F7F9F5", "#D4AF37"],
-    });
+    try {
+      const response = await fetch("/api/inquiry", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          port,
+          desk,
+          program,
+          product,
+          volume,
+          requirements,
+        }),
+      });
 
-    // Reset after delay
-    setTimeout(() => {
-      setName("");
-      setEmail("");
-      setPort("");
-      setRequirements("");
-      setSubmitted(false);
-    }, 4500);
+      if (!response.ok) {
+        throw new Error("Failed to submit RFQ");
+      }
+
+      setSubmitted(true);
+
+      // Premium Confetti Burst
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ["#459A26", "#225D38", "#F7F9F5", "#D4AF37"],
+      });
+
+      // Reset after delay
+      setTimeout(() => {
+        setName("");
+        setEmail("");
+        setPort("");
+        setRequirements("");
+        setSubmitted(false);
+      }, 4500);
+    } catch (err) {
+      console.error(err);
+      alert("There was an error sending your RFQ. Please try again or email us directly at trade@heronfresh.com.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -273,9 +304,10 @@ export default function Inquiry() {
               <button
                 id="submit-rfq-btn"
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-gradient-to-r from-[#225D38] to-[#459A26] hover:from-[#459A26] hover:to-[#225D38] text-white font-semibold text-xs tracking-wider uppercase transition-all duration-300 border border-[#225D38]/20 shadow-md shadow-[#459A26]/10"
+                disabled={submitting}
+                className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-gradient-to-r from-[#225D38] to-[#459A26] hover:from-[#459A26] hover:to-[#225D38] text-white font-semibold text-xs tracking-wider uppercase transition-all duration-300 border border-[#225D38]/20 shadow-md shadow-[#459A26]/10 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span>Submit RFQ Specifications</span>
+                <span>{submitting ? "Submitting specifications..." : "Submit RFQ Specifications"}</span>
                 <Send className="w-3.5 h-3.5" />
               </button>
             </form>
