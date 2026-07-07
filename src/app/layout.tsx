@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit, Playfair_Display } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -31,6 +32,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-sans bg-[#F4F7F2] text-[#0B2014] selection:bg-[#74B72E] selection:text-[#F4F7F2]">
         {children}
+        <SpeedInsights />
       </body>
     </html>
   );
